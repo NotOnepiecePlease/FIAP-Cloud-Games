@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fcg-catalog-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: fcg-catalog-api }
+  template:
+    metadata:
+      labels: { app: fcg-catalog-api }
+    spec:
+      containers:
+        - name: api
+          image: fcg-catalog-api:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8080 }]
+          envFrom: [{ configMapRef: { name: fcg-config } }]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fcg-catalog-api
+spec:
+  selector: { app: fcg-catalog-api }
+  ports: [{ port: 80, targetPort: 8080 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fcg-payments-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: fcg-payments-api }
+  template:
+    metadata:
+      labels: { app: fcg-payments-api }
+    spec:
+      containers:
+        - name: api
+          image: fcg-payments-api:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8080 }]
+          envFrom: [{ configMapRef: { name: fcg-config } }]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fcg-payments-api
+spec:
+  selector: { app: fcg-payments-api }
+  ports: [{ port: 80, targetPort: 8080 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fcg-notifications-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: fcg-notifications-api }
+  template:
+    metadata:
+      labels: { app: fcg-notifications-api }
+    spec:
+      containers:
+        - name: api
+          image: fcg-notifications-api:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8080 }]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fcg-notifications-api
+spec:
+  selector: { app: fcg-notifications-api }
+  ports: [{ port: 80, targetPort: 8080 }]
